@@ -3,6 +3,7 @@
 	// Se ejecutan los plug-in de la tabla de datos y los combos
 	$(document).ready(function() {	
 		TestTable1();
+		getMovies();
 	});
 
 </script>

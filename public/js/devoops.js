@@ -221,7 +221,45 @@ function TestTable1(){
 			"sSearch": "",
 			"sLengthMenu": '_MENU_'
 		}
+		,"aaData": getTopRatedMovies()
 	});
+}
+
+//Get top rated movies 
+function getToRatedMovies(){
+
+	var url = 'http://api.themoviedb.org/3/',
+	    mode = 'movie/popular?',
+	    key = 'api_key=352dc2e4ed8183bd9fbd6f7c5e235f48&page=1';
+
+    $.ajax({
+        type: 'GET',
+        url: url + mode + key,
+        async: false,        
+        contentType: 'application/json',
+        dataType: 'jsonp',
+        success: function(json) {
+			console.dir(json);
+			var data = json.results;
+			var response = [];
+			for(var i in data)
+			{
+				var movie = {
+					title:data[i].title,
+					date:data[i].release_date,
+					director:data[i].release_date,
+					top:data[i].release_date
+				}
+				console.log(movie);
+			    response.push(movie); 
+			}
+
+            return response;
+        },
+        error: function(e) {
+            console.log(e.message);
+        }
+    });
 }
 
 
