@@ -1,12 +1,19 @@
 <script type="text/javascript">
 	
-	$(document).ready(function() {		
+	$(document).ready(function() {	
+
 		// Create Data Table component
 		CreateDataTable()
 
 		// Load data from API
 		getAPIData('movie',null);		
 	});
+
+	// Search function using the movieDB API
+	function search(){		
+		// Load data from API
+		getAPIData('movie',$('#movie_name').val());
+	}
 
 </script>
 <div class="row">
@@ -47,14 +54,18 @@
 					    				'data-placement'=>'bottom')) 
 						}}
 				    </div>
-					<button class="btn btn-primary btn-label-left" onclick="getAPIData('movie',$('#movie_name').val());">{{Lang::get('movies_fields.search')}}</button>									
+					<button class="btn btn-primary btn-label-left" onclick="search();">{{Lang::get('movies_fields.search')}}</button>
+					<div class="loadingDiv box-content" style="display:none;">
+						{{ HTML::image('img/devoops_getdata.gif', 'preloader', array('class'=>'devoops-getdata')) }}
+					</div>					
 				</div>				
-			</div>
+			</div>			
 			<div class="box-content no-padding">
 				
 				<table class="table table-bordered table-striped table-hover table-heading table-datatable" id="datatable-1">
 					<thead>
 						<tr>							
+							<th>{{Lang::get('movies_fields.poster')}}</th>
 							<th>{{Lang::get('movies_fields.name')}}</th>							
 							<th>{{Lang::get('movies_fields.date')}}</th>
 							<th>{{Lang::get('movies_fields.vote_average')}}</th>

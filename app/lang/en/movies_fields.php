@@ -3,12 +3,12 @@
 return array(
 
 	// Page's titles
-	'title'	=> 'Movies',
+	'title'	=> 'Popular Movies',
 	// Fields's titles
 	'name'	=> 'Movie Name',
 	'date'	=> 'Release Date',
 	'vote_average'	=> 'Vote Average',
 	'vote_count'	=> 'Vote Count',
-	'view' => 'Movie Detail',
-	'search' => 'Search'
+	'search' => 'Search',
+	'poster' => 'Poster Image'
 );

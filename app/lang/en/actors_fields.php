@@ -2,10 +2,11 @@
 
 return array(
 	// Page's title
-	'title'	=> 'Actors',
+	'title'	=> 'Popular Actors',
 	// Fields's title
 	'name'	=> 'Name of the Actor',
 	'id' => 'MovieDB Identification',
 	'popularity' => 'Popularity',
-	'search' => 'Search'
+	'search' => 'Search',
+	'image' => 'Profile Picture'
 );

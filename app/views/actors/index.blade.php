@@ -8,6 +8,12 @@
 		getAPIData('person',null);
 	});
 
+	// Search function using the movieDB API
+	function search(){		
+		// Load data from API
+		getAPIData('person',$('#actor_name').val());
+	}
+
 </script>
 <div class="row">
 	<div id="breadcrumb" class="col-md-12">
@@ -47,13 +53,17 @@
 					    				'data-placement'=>'bottom')) 
 						}}
 				    </div>
-					<button class="btn btn-primary btn-label-left" onclick="getAPIData('person',$('#actor_name').val());">{{Lang::get('actors_fields.search')}}</button>									
+					<button class="btn btn-primary btn-label-left" onclick="search();">{{Lang::get('actors_fields.search')}}</button>
+					<div class="loadingDiv box-content" style="display:none;">
+						{{ HTML::image('img/devoops_getdata.gif', 'preloader', array('class'=>'devoops-getdata')) }}
+					</div>
 				</div>				
 			</div>
 			<div class="box-content no-padding">
 				<table class="table table-bordered table-striped table-hover table-heading table-datatable" id="datatable-1">
 					<thead>
 						<tr>							
+							<th>{{Lang::get('actors_fields.image')}}</th>
 							<th>{{Lang::get('actors_fields.id')}}</th>							
 							<th>{{Lang::get('actors_fields.name')}}</th>
 							<th>{{Lang::get('actors_fields.popularity')}}</th>

@@ -8,13 +8,10 @@
 //  Created by DevOOPS.
 //
 function LoadAjaxContent(url, contentDiv, loadingDiv){
-	// variables por defecto
 	contentDiv = typeof(contentDiv) != 'undefined' ? contentDiv : '#ajax-content';
 	loadingDiv = typeof(loadingDiv) != 'undefined' ? loadingDiv : '.preloader';	
-	// Muestra div de cargando
 	$(loadingDiv).show();		
 	
-	// Realiza la peticion a la url ingresada
 	$.ajax({
 		mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
 		url: url,
@@ -175,7 +172,7 @@ function CloseModalBox(){
 function CreateDataTable(){
 	// Init the component
 	$('#datatable-1').dataTable( {
-		"aaSorting": [[ 2, "desc" ]],
+		"aaSorting": [[ 3, "desc" ]],
 		"sDom": "<'box-content'<'col-sm-6'><'col-sm-6 text-right'l><'clearfix'>>rt<'box-content'<'col-sm-6'i><'col-sm-6 text-right'p><'clearfix'>>",
 		"sPaginationType": "bootstrap",
 		"oLanguage": {
@@ -195,10 +192,15 @@ function FillDataTable(data){
     dt.fnAddData(data);
     // Draw the table
     dt.fnDraw();   	
+    // Hide the loading Div
+    $('.loadingDiv').hide(); 
 }
 
 //Make the call to the API
 function getAPIData(mode, index){
+	// Show loading div
+	$('.loadingDiv').show();
+
 	// Define the constants for get the API
 	var MAIN_URL = 'http://api.themoviedb.org/3/';
 	var API_KEY = '352dc2e4ed8183bd9fbd6f7c5e235f48';
@@ -219,7 +221,7 @@ function getAPIData(mode, index){
 	console.log(fullUrl);
     
     // Define the response array
-    var result = [];
+    var result = [];    
 
     // Make the ajax call
     $.ajax({
@@ -237,10 +239,19 @@ function getAPIData(mode, index){
 			{
 				if (mode == 'movie')
 				{
-					var viewURL = '"movies/view'+val.id+'"';
+					var imgURL;
+					var imgLink = '<i>No file</i>';
+					
+					// Validate the not null img
+					if (!!val.poster_path){
+						// Create the image url
+					 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.poster_path+'"';
+					 	imgLink = '<a onclick=\'window.open('+imgURL+',"_blank")\'><img src='+imgURL+'></a>';
+					}
 					
 					// Add each row to the response for movie
 					result.push([
+						imgLink,
 						val.title, 
 						val.release_date, 
 						val.vote_average, 
@@ -249,8 +260,18 @@ function getAPIData(mode, index){
 				}
 				else if (mode == 'person')
 				{
+					var imgURL;
+					var imgLink = '<i>No file</i>';
+					
+					// Validate the not null img
+					if (!!val.profile_path){
+						// Create the image url
+					 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.profile_path+'"';
+					 	imgLink = '<a onclick=\'window.open('+imgURL+',"_blank")\'><img src='+imgURL+'></a>';
+					}
+					
 					// Add each row to the response for actor
-					result.push([val.id, val.name, val.popularity]);
+					result.push([imgLink, val.id, val.name, val.popularity]);
 				}
 			});
 
@@ -259,8 +280,10 @@ function getAPIData(mode, index){
         },
         error: function(e) {
             console.log(e.message);
+
+            $('.loadingDiv').hide(); 
         }
-    });   
+    });    
 }
 
 //////////////////////////////////////////////////////
