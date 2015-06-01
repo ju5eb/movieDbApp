@@ -219,9 +219,7 @@ function TestTable1(){
 		"sPaginationType": "bootstrap",
 		"oLanguage": {
 			"sSearch": "",
-			"sLengthMenu": '_MENU_',
-		"ajax": 'http://www.omdbapi.com/?t=frozen&y=&plot=short&r=json'
-
+			"sLengthMenu": '_MENU_'
 		}
 	});
 }
