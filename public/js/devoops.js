@@ -212,7 +212,7 @@ function CloseModalBox(){
 //
 // Function for table, located in element with id = datatable-1
 //
-function TestTable1(){
+function TestTable1(data){
 	
 	$('#datatable-1').dataTable( {
 		"aaSorting": [[ 0, "asc" ]],
@@ -221,9 +221,9 @@ function TestTable1(){
 		"oLanguage": {
 			"sSearch": "",
 			"sLengthMenu": '_MENU_'
-		}
-	});
-		
+		},
+		"aaData": data
+	});		
 }
 
 
@@ -242,24 +242,14 @@ function getMovies(movieName){
             dataType: 'jsonp',
             success: function(json) {
                 //console.dir(json);
-		
-		var html = '';
+		var result = [];
 		
 		$(json.results).each(function(i,val)
 		{
-
-			html += '<tr>'+						
-					'<th>'+val.title+'</th>'+							
-					'<th>'+val.release_date+'</th>'+
-					'<th>'+val.title+'</th>'+
-					'<th>'+val.title+'</th>'+
-				'</tr>';
-
+			result.push([val.title, val.title, val.title, val.title]);
 		});
 
-		$("#datatable-1 tbody").append(html);
-
-		TestTable1();
+		TestTable1(result);
             },
             error: function(e) {
                 console.log(e.message);
