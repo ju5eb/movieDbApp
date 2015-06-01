@@ -213,6 +213,11 @@ function CloseModalBox(){
 // Function for table, located in element with id = datatable-1
 //
 function TestTable1(){
+
+	var url = 'http://api.themoviedb.org/3/',
+	    mode = 'movie/popular?',
+	    key = 'api_key=352dc2e4ed8183bd9fbd6f7c5e235f48&page=1';
+
 	$('#datatable-1').dataTable( {
 		"aaSorting": [[ 0, "asc" ]],
 		"sDom": "<'box-content'<'col-sm-6'f><'col-sm-6 text-right'l><'clearfix'>>rt<'box-content'<'col-sm-6'i><'col-sm-6 text-right'p><'clearfix'>>",
@@ -221,12 +226,12 @@ function TestTable1(){
 			"sSearch": "",
 			"sLengthMenu": '_MENU_'
 		}
-		,"aaData": getTopRatedMovies()
+		,"ajax": url + mode + key
 	});
 }
 
 //Get top rated movies 
-function getToRatedMovies(){
+function getTopRatedMovies(){
 
 	var url = 'http://api.themoviedb.org/3/',
 	    mode = 'movie/popular?',
