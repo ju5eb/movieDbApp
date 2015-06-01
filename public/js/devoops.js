@@ -1928,7 +1928,7 @@ $(document).ready(function () {
 		    },
 		type: 'GET', 
 		crossDomain: true,
-		url: 'http://private-anon-f83a7971c-themoviedb.apiary-mock.com/3/search/movie',
+		url: 'http://api.themoviedb.org/3/search/movie',
 	    	dataType: 'json',
 		success: function(response) { // Si es exitosa la petición ejecuta lo siguiente
 		    
