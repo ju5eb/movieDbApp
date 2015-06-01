@@ -42,13 +42,13 @@
 					</a>
 					<ul class="dropdown-menu">						
 						<li>
-							<a href="#" class="ajax-link">
+							<a href="movies" class="ajax-link">
 								<i class="fa fa-video-camera"></i>
 								<span class="hidden-xs">{{Lang::get('dashboard_fields.menuTitleMovies')}}</span>
 							</a>							
 						</li>
 						<li>
-							<a href="#" class="ajax-link">
+							<a href="actors" class="ajax-link">
 								<i class="fa fa-users"></i>
 								<span class="hidden-xs">{{Lang::get('dashboard_fields.menuTitleActors')}}</span>
 							</a>
