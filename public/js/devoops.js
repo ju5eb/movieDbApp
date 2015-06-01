@@ -224,6 +224,30 @@ function TestTable1(){
 	});
 }
 
+
+//Get all the movies with similar name
+function getMovies(movieName){
+
+	var url = 'http://api.themoviedb.org/3/',
+        mode = 'search/movie?query=',
+        key = '&api_key=352dc2e4ed8183bd9fbd6f7c5e235f48';
+    
+        $.ajax({
+            type: 'GET',
+            url: url + mode + movieName + key,
+            async: false,
+            jsonpCallback: 'testing',
+            contentType: 'application/json',
+            dataType: 'jsonp',
+            success: function(json) {
+                console.dir(json);
+            },
+            error: function(e) {
+                console.log(e.message);
+            }
+        });
+}
+
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //
@@ -353,22 +377,4 @@ $(document).ready(function () {
 			LoadAjaxContent(url);
 		}
 	});
-
-	$.ajax({ 
-		header: {
-			"api_key":"352dc2e4ed8183bd9fbd6f7c5e235f48",
-			"movie":"avengers"
-		    },
-		type: 'GET', 
-		crossDomain: true,
-		url: 'http://api.themoviedb.org/3/search/movie',
-	    	dataType: 'json',
-		success: function(response) { // Si es exitosa la petición ejecuta lo siguiente
-		    
-		    // Se crea la variable con la respuesta de la petición
-		    var responseData = $.parseJSON(response);
-
-		    console.log(response);
-		}
-    	});
 });
