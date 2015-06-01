@@ -11,7 +11,7 @@
 		{{ HTML::style('plugins/bootstrap/bootstrap.css', array('media' => 'screen')) }}
 		{{ HTML::style('plugins/jquery-ui/jquery-ui.min.css', array('media' => 'screen')) }}
 				
-		{{ HTML::style('css/style.css', array('media' => 'screen')) }}
+		{{ HTML::style('css/style.min.css', array('media' => 'screen')) }}
 		{{ HTML::script('plugins/jquery/jquery-2.1.0.min.js') }}
 		{{ HTML::script('plugins/jquery-ui/jquery-ui.min.js') }}		
 
@@ -76,7 +76,7 @@
 		{{ HTML::script('plugins/datatables/dataTables.bootstrap.js') }}
 				
 		<!-- All functions for this theme + document.ready processing -->
-		{{ HTML::script('js/devoops.js') }}
+		{{ HTML::script('js/devoops.min.js') }}
 </body>
 
 </html>

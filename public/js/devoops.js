@@ -3,49 +3,9 @@
 //
 "use strict";
 
-var MAIN_URL = 'http://api.themoviedb.org/3/';
-var API_KEY = '352dc2e4ed8183bd9fbd6f7c5e235f48';
-
-// Carga el contenido realizando una petición a la dirección ingresada
-function LoadContent(inURL){
-	$.ajax({ // create an AJAX call...
-	    data: '', // get the form data
-		type: 'GET', // GET or POST
-		url: inURL, // the file to call
-		success: function(response) { // on success..
-			
-			var responseData = $.parseJSON(response);
-			var successVal = responseData.success;				
-
-			if (successVal == 1)
-			{
-				var urlData = responseData.url;
-				LoadAjaxContent(urlData);					
-			}
-			else
-			{					
-				var errorsData = responseData.errors;
-
-				var html = "<style>li.error{color: red}</style><ul>";
-				$(errorsData).each(function(i,val)
-				{
-					console.log(val);
-					html += "<li class='error'>" + val + "</li>"; 
-
-				});
-				html += "</ul>";
-				$('#errors_div').html(html);
-			}				
-		}
-
-	});
-}	
-
-/*-------------------------------------------
-	Main scripts used by theme
----------------------------------------------*/
 //
 //  Function for load content from url and put in "divName" block
+//  Created by DevOOPS.
 //
 function LoadAjaxContent(url, contentDiv, loadingDiv){
 	// variables por defecto
@@ -73,6 +33,7 @@ function LoadAjaxContent(url, contentDiv, loadingDiv){
 
 //
 //  Function set min-height of window (required for this theme)
+//  Created by DevOOPS.
 //
 function SetMinBlockHeight(elem){
 	elem.css('min-height', window.innerHeight - 50);
@@ -80,7 +41,7 @@ function SetMinBlockHeight(elem){
 
 //
 //  Helper for open ModalBox with requested header, content and bottom
-//
+// 	Created by DevOOPS.
 //
 function OpenModalBox(header, inner, bottom){
 	var modalbox = $('#modalbox');
@@ -93,7 +54,7 @@ function OpenModalBox(header, inner, bottom){
 
 //
 //  Close modalbox
-//
+//  Created by DevOOPS.
 //
 function CloseModalBox(){
 	var modalbox = $('#modalbox');
@@ -185,9 +146,10 @@ function CloseModalBox(){
 	})
 };
 })( jQuery );
+
 //
 // Beauty Hover Plugin (backlight row and col when cell in mouseover)
-//
+// Created by DevOOPS.
 //
 (function( $ ){
 	$.fn.beautyHover = function() {
@@ -209,14 +171,9 @@ function CloseModalBox(){
 	};
 })( jQuery );
 
-/*-------------------------------------------
-	Scripts for DataTables page (tables_datatables.html)
----------------------------------------------*/
-//
-// Function for table, located in element with id = datatable-1
-//
-function TestTable1(data){
-	
+// Create Data Table
+function CreateDataTable(){
+	// Init the component
 	$('#datatable-1').dataTable( {
 		"aaSorting": [[ 2, "desc" ]],
 		"sDom": "<'box-content'<'col-sm-6'><'col-sm-6 text-right'l><'clearfix'>>rt<'box-content'<'col-sm-6'i><'col-sm-6 text-right'p><'clearfix'>>",
@@ -224,75 +181,36 @@ function TestTable1(data){
 		"oLanguage": {
 			"sSearch": "",
 			"sLengthMenu": '_MENU_'
-		},
-		"aaData": data
-	});		
+		}
+	});
 }
 
-//Fill the form fields with the data
-function FillForm(data){
-	//Fill the name field
-	$('#movie_name').value = data.title;
-
-	//Fill the release date field
-	$('#release_date').value = data.release_date;
-}
-
-//Get top rated movies 
-function getTopRatedMovies(){
-
-	var url = 'http://api.themoviedb.org/3/',
-	    mode = 'movie/popular?',
-	    key = 'api_key=352dc2e4ed8183bd9fbd6f7c5e235f48&page=1';
-
-    $.ajax({
-        type: 'GET',
-        url: url + mode + key,
-        async: false,        
-        contentType: 'application/json',
-        dataType: 'jsonp',
-        success: function(json) {
-			console.dir(json);
-			var data = json.results;
-			var response = [];
-			for(var i in data)
-			{
-				var movie = {
-					title:data[i].title,
-					date:data[i].release_date,
-					director:data[i].release_date,
-					top:data[i].release_date
-				}
-				console.log(movie);
-			    response.push(movie); 
-			}
-
-            return response;
-        },
-        error: function(e) {
-            console.log(e.message);
-        }
-    });
+// Function for fill table, located in element with id = datatable-1
+function FillDataTable(data){
+	// Get the dataTable object
+	var dt = $('#datatable-1').dataTable();
+	// Clear the table
+	dt.fnClearTable();
+	// Add the data
+    dt.fnAddData(data);
+    // Draw the table
+    dt.fnDraw();   	
 }
 
 //Make the call to the API
 function getAPIData(mode, index){
+	// Define the constants for get the API
+	var MAIN_URL = 'http://api.themoviedb.org/3/';
+	var API_KEY = '352dc2e4ed8183bd9fbd6f7c5e235f48';
 
 	// Define the urlFunction by default
 	var urlFunction = mode + '/popular?api_key=';
-
-	// Define the objective component by default
-	var objective = 'table'
 
 	// Validates the index to search
 	if (!!index)
 	{
 		// Define the url function
 		urlFunction = 'search/' + mode + '?query=' + index + '&api_key=';
-
-		// Define the objective
-		objective = 'form';
-
 	}
 
 	// Define the URL for the moviedb API
@@ -321,9 +239,9 @@ function getAPIData(mode, index){
 				{
 					var viewURL = '"movies/view'+val.id+'"';
 					
-					// Add each row to the response
+					// Add each row to the response for movie
 					result.push([
-						'<a onclick=\'window.location.hash='+viewURL+';LoadAjaxContent('+viewURL+');\'>'+val.title+'</a>', 
+						val.title, 
 						val.release_date, 
 						val.vote_average, 
 						val.vote_count]
@@ -331,79 +249,18 @@ function getAPIData(mode, index){
 				}
 				else if (mode == 'person')
 				{
-					// Add each row to the response
+					// Add each row to the response for actor
 					result.push([val.id, val.name, val.popularity]);
 				}
 			});
 
-			if (objective == 'table')
-			{
-				// Fill the data table
-				TestTable1(result);				
-			}
-			else
-			{
-				// Fill the field of form
-				FillForm(json);
-			}
+			// Fill the data table
+			FillDataTable(result);			
         },
         error: function(e) {
             console.log(e.message);
         }
     });   
-}
-
-
-//Get all the movies with similar name
-function getMovies(movieName){
-
-	var url = 'http://api.themoviedb.org/3/',
-        mode = 'search/movie?query=',
-        key = '&api_key=352dc2e4ed8183bd9fbd6f7c5e235f48';
-    
-        $.ajax({
-            type: 'GET',
-            url: url + mode + movieName + key,
-            async: false,
-            contentType: 'application/json',
-            dataType: 'jsonp',
-            success: function(json) {
-                //console.dir(json);
-				var result = [];
-				
-				$(json.results).each(function(i,val)
-				{
-					result.push([val.title, val.title, val.title, val.title]);
-				});
-
-				TestTable1(result);
-            },
-            error: function(e) {
-                console.log(e.message);
-            }
-        });
-}
-
-//Get all the movies with similar name
-function getActor(actorName){
-
-	var url = 'http://api.themoviedb.org/3/',
-        mode = 'search/person?query=',
-        key = '&api_key=352dc2e4ed8183bd9fbd6f7c5e235f48';
-    
-        $.ajax({
-            type: 'GET',
-            url: url + mode + actorName + key,
-            async: false,
-            contentType: 'application/json',
-            dataType: 'jsonp',
-            success: function(json) {
-                console.dir(json);
-            },
-            error: function(e) {
-                console.log(e.message);
-            }
-        });
 }
 
 //////////////////////////////////////////////////////

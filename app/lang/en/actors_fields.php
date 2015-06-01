@@ -6,5 +6,6 @@ return array(
 	// Fields's title
 	'name'	=> 'Name of the Actor',
 	'id' => 'MovieDB Identification',
-	'popularity' => 'Popularity'
+	'popularity' => 'Popularity',
+	'search' => 'Search'
 );

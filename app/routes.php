@@ -19,7 +19,6 @@ Route::get('/', function()
 
 // -------------------- Movies ---------------------
 Route::get('movies', 'MoviesController@action_index');
-Route::get('movies/view{id}', 'MoviesController@action_view');
 
 // -------------------- Actors ---------------------
 Route::get('actors', 'ActorsController@action_index');

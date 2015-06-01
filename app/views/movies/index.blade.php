@@ -1,9 +1,11 @@
 <script type="text/javascript">
 	
-	$(document).ready(function() {	
+	$(document).ready(function() {		
+		// Create Data Table component
+		CreateDataTable()
+
 		// Load data from API
-		getAPIData('movie',null);
-		
+		getAPIData('movie',null);		
 	});
 
 </script>
@@ -45,7 +47,7 @@
 					    				'data-placement'=>'bottom')) 
 						}}
 				    </div>
-					<button onclick="$('#datatable-1').DataTable().destroy();getAPIData('movie',$('#movie_name').val());">{{Lang::get('movies_fields.search')}}</button>									
+					<button class="btn btn-primary btn-label-left" onclick="getAPIData('movie',$('#movie_name').val());">{{Lang::get('movies_fields.search')}}</button>									
 				</div>				
 			</div>
 			<div class="box-content no-padding">

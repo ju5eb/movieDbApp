@@ -7,7 +7,6 @@
  */
 class ActorsController extends Controller
 {
-
     /**
     * Get the index page of actor's module
     */

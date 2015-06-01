@@ -1,7 +1,10 @@
 <script type="text/javascript">
 	
-	// Se ejecutan los plug-in de la tabla de datos y los combos
-	$(document).ready(function() {	
+	$(document).ready(function() {		
+		// Create Data Table component
+		CreateDataTable()
+
+		// Load data from API
 		getAPIData('person',null);
 	});
 
@@ -29,6 +32,24 @@
 				</div>
 				<div class="no-move"></div>
 			</div>
+			<div class="box-content form-horizontal">					
+					
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">{{Lang::get('actors_fields.name')}}</label>
+					<div class="col-sm-4">
+					    {{
+					    	Form::text(	
+					    		'actor_name',
+					    		null, 
+			    				array(	'id' => 'actor_name',
+			    						'class'=>'form-control', 
+					    				'data-toggle'=>'tooltip', 
+					    				'data-placement'=>'bottom')) 
+						}}
+				    </div>
+					<button class="btn btn-primary btn-label-left" onclick="getAPIData('person',$('#actor_name').val());">{{Lang::get('actors_fields.search')}}</button>									
+				</div>				
+			</div>
 			<div class="box-content no-padding">
 				<table class="table table-bordered table-striped table-hover table-heading table-datatable" id="datatable-1">
 					<thead>
@@ -38,9 +59,7 @@
 							<th>{{Lang::get('actors_fields.popularity')}}</th>
 						</tr>
 					</thead>
-					<tbody>
-					<!-- Start: list_row -->
-						
+					<tbody>					
 
 					</tbody>					
 				</table>
