@@ -1802,7 +1802,28 @@ function getMovies(movieName){
             type: 'GET',
             url: url + mode + movieName + key,
             async: false,
-            jsonpCallback: 'testing',
+            contentType: 'application/json',
+            dataType: 'jsonp',
+            success: function(json) {
+                console.dir(json);
+            },
+            error: function(e) {
+                console.log(e.message);
+            }
+        });
+}
+
+//Get all the movies with similar name
+function getActor(actorName){
+
+	var url = 'http://api.themoviedb.org/3/',
+        mode = 'search/person?query=',
+        key = '&api_key=352dc2e4ed8183bd9fbd6f7c5e235f48';
+    
+        $.ajax({
+            type: 'GET',
+            url: url + mode + actorName + key,
+            async: false,
             contentType: 'application/json',
             dataType: 'jsonp',
             success: function(json) {
@@ -1825,7 +1846,8 @@ function getMovies(movieName){
 //////////////////////////////////////////////////////
 $(document).ready(function () {
 
-	$.support.cors = true;
+	getMovies('avengers');
+	getActor('dicaprio');
 
 	$('.show-sidebar').on('click', function () {
 		$('div#main').toggleClass('sidebar-show');
