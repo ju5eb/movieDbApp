@@ -11,7 +11,14 @@
 |
 */
 
+// -------------------- Dashboard ---------------------
 Route::get('/', function()
 {
 	return View::make('dashboard');
 });
+
+// -------------------- Movies ---------------------
+Route::get('movies', 'MoviesController@action_index');
+
+// -------------------- Actors ---------------------
+Route::get('actors', 'ActorsController@action_index');
