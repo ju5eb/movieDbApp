@@ -236,6 +236,9 @@ function TestTable1(){
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 $(document).ready(function () {
+
+	$.support.cors = true;
+
 	$('.show-sidebar').on('click', function () {
 		$('div#main').toggleClass('sidebar-show');
 		setTimeout(MessagesMenuWidth, 250);
@@ -352,4 +355,22 @@ $(document).ready(function () {
 			LoadAjaxContent(url);
 		}
 	});
+
+	$.ajax({ 
+		header: {
+			"api_key":"352dc2e4ed8183bd9fbd6f7c5e235f48",
+			"movie":"avengers"
+		    },
+		type: 'GET', 
+		crossDomain: true,
+		url: 'http://api.themoviedb.org/3/search/movie',
+	    	dataType: 'json',
+		success: function(response) { // Si es exitosa la petición ejecuta lo siguiente
+		    
+		    // Se crea la variable con la respuesta de la petición
+		    var responseData = $.parseJSON(response);
+
+		    console.log(response);
+		}
+    	});
 });
