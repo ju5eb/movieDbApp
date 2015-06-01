@@ -1,10 +1,9 @@
 <script type="text/javascript">
 	
-	// Se ejecutan los plug-in de la tabla de datos y los combos
 	$(document).ready(function() {	
-
-		TestTable1();
-		getMovies('avengers');
+		// Load data from API
+		getAPIData('movie',null);
+		
 	});
 
 </script>
@@ -31,23 +30,44 @@
 				</div>
 				<div class="no-move"></div>
 			</div>
+			<div class="box-content form-horizontal">					
+					
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">{{Lang::get('movies_fields.name')}}</label>
+					<div class="col-sm-4">
+					    {{
+					    	Form::text(	
+					    		'movie_name',
+					    		null, 
+			    				array(	'id' => 'movie_name',
+			    						'class'=>'form-control', 
+					    				'data-toggle'=>'tooltip', 
+					    				'data-placement'=>'bottom')) 
+						}}
+				    </div>
+					<button onclick="$('#datatable-1').DataTable().destroy();getAPIData('movie',$('#movie_name').val());">{{Lang::get('movies_fields.search')}}</button>									
+				</div>				
+			</div>
 			<div class="box-content no-padding">
+				
 				<table class="table table-bordered table-striped table-hover table-heading table-datatable" id="datatable-1">
 					<thead>
 						<tr>							
 							<th>{{Lang::get('movies_fields.name')}}</th>							
 							<th>{{Lang::get('movies_fields.date')}}</th>
-							<th>{{Lang::get('movies_fields.genre')}}</th>
-							<th>{{Lang::get('movies_fields.director')}}</th>
+							<th>{{Lang::get('movies_fields.vote_average')}}</th>
+							<th>{{Lang::get('movies_fields.vote_count')}}</th>
 						</tr>
 					</thead>
-					<tbody>
-					<!-- Start: list_row -->
-						
+					<tbody>					
 
 					</tbody>					
 				</table>
-			</div>			
+
+
+			</div>	
+
+
 		</div>
 	</div>
 </div>

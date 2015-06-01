@@ -3,6 +3,9 @@
 //
 "use strict";
 
+var MAIN_URL = 'http://api.themoviedb.org/3/';
+var API_KEY = '352dc2e4ed8183bd9fbd6f7c5e235f48';
+
 // Carga el contenido realizando una petición a la dirección ingresada
 function LoadContent(inURL){
 	$.ajax({ // create an AJAX call...
@@ -212,12 +215,11 @@ function CloseModalBox(){
 //
 // Function for table, located in element with id = datatable-1
 //
-
 function TestTable1(data){
 	
 	$('#datatable-1').dataTable( {
-		"aaSorting": [[ 0, "asc" ]],
-		"sDom": "<'box-content'<'col-sm-6'f><'col-sm-6 text-right'l><'clearfix'>>rt<'box-content'<'col-sm-6'i><'col-sm-6 text-right'p><'clearfix'>>",
+		"aaSorting": [[ 2, "desc" ]],
+		"sDom": "<'box-content'<'col-sm-6'><'col-sm-6 text-right'l><'clearfix'>>rt<'box-content'<'col-sm-6'i><'col-sm-6 text-right'p><'clearfix'>>",
 		"sPaginationType": "bootstrap",
 		"oLanguage": {
 			"sSearch": "",
@@ -225,6 +227,15 @@ function TestTable1(data){
 		},
 		"aaData": data
 	});		
+}
+
+//Fill the form fields with the data
+function FillForm(data){
+	//Fill the name field
+	$('#movie_name').value = data.title;
+
+	//Fill the release date field
+	$('#release_date').value = data.release_date;
 }
 
 //Get top rated movies 
@@ -264,6 +275,84 @@ function getTopRatedMovies(){
     });
 }
 
+//Make the call to the API
+function getAPIData(mode, index){
+
+	// Define the urlFunction by default
+	var urlFunction = mode + '/popular?api_key=';
+
+	// Define the objective component by default
+	var objective = 'table'
+
+	// Validates the index to search
+	if (!!index)
+	{
+		// Define the url function
+		urlFunction = 'search/' + mode + '?query=' + index + '&api_key=';
+
+		// Define the objective
+		objective = 'form';
+
+	}
+
+	// Define the URL for the moviedb API
+	var fullUrl = MAIN_URL + urlFunction + API_KEY;
+
+	console.log(fullUrl);
+    
+    // Define the response array
+    var result = [];
+
+    // Make the ajax call
+    $.ajax({
+        type: 'GET',
+        url: fullUrl,
+        async: false,
+        contentType: 'application/json',
+        dataType: 'jsonp',
+        success: function(json) {
+
+        	console.dir(json);
+
+			// Iterate the results 
+			$(json.results).each(function(i,val)
+			{
+				if (mode == 'movie')
+				{
+					var viewURL = '"movies/view'+val.id+'"';
+					
+					// Add each row to the response
+					result.push([
+						'<a onclick=\'window.location.hash='+viewURL+';LoadAjaxContent('+viewURL+');\'>'+val.title+'</a>', 
+						val.release_date, 
+						val.vote_average, 
+						val.vote_count]
+					);						
+				}
+				else if (mode == 'person')
+				{
+					// Add each row to the response
+					result.push([val.id, val.name, val.popularity]);
+				}
+			});
+
+			if (objective == 'table')
+			{
+				// Fill the data table
+				TestTable1(result);				
+			}
+			else
+			{
+				// Fill the field of form
+				FillForm(json);
+			}
+        },
+        error: function(e) {
+            console.log(e.message);
+        }
+    });   
+}
+
 
 //Get all the movies with similar name
 function getMovies(movieName){
@@ -280,14 +369,14 @@ function getMovies(movieName){
             dataType: 'jsonp',
             success: function(json) {
                 //console.dir(json);
-		var result = [];
-		
-		$(json.results).each(function(i,val)
-		{
-			result.push([val.title, val.title, val.title, val.title]);
-		});
+				var result = [];
+				
+				$(json.results).each(function(i,val)
+				{
+					result.push([val.title, val.title, val.title, val.title]);
+				});
 
-		TestTable1(result);
+				TestTable1(result);
             },
             error: function(e) {
                 console.log(e.message);

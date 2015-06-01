@@ -2,7 +2,7 @@
 	
 	// Se ejecutan los plug-in de la tabla de datos y los combos
 	$(document).ready(function() {	
-		TestTable1();
+		getAPIData('person',null);
 	});
 
 </script>
@@ -33,10 +33,9 @@
 				<table class="table table-bordered table-striped table-hover table-heading table-datatable" id="datatable-1">
 					<thead>
 						<tr>							
-							<th>{{Lang::get('actors_fields.name')}}</th>							
-							<th>{{Lang::get('actors_fields.birthdate')}}</th>
-							<th>{{Lang::get('actors_fields.birthplace')}}</th>
-							<th>{{Lang::get('actors_fields.last_movie')}}</th>
+							<th>{{Lang::get('actors_fields.id')}}</th>							
+							<th>{{Lang::get('actors_fields.name')}}</th>
+							<th>{{Lang::get('actors_fields.popularity')}}</th>
 						</tr>
 					</thead>
 					<tbody>

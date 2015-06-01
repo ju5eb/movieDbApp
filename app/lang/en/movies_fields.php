@@ -1,11 +1,14 @@
 <?php 
 
 return array(
+
 	// Page's titles
 	'title'	=> 'Movies',
 	// Fields's titles
 	'name'	=> 'Movie Name',
 	'date'	=> 'Release Date',
-	'genre'	=> 'Genre',
-	'director'	=> "Director's Name",
+	'vote_average'	=> 'Vote Average',
+	'vote_count'	=> 'Vote Count',
+	'view' => 'Movie Detail',
+	'search' => 'Search'
 );
