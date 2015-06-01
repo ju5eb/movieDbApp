@@ -213,6 +213,7 @@ function CloseModalBox(){
 // Function for table, located in element with id = datatable-1
 //
 function TestTable1(){
+	
 	$('#datatable-1').dataTable( {
 		"aaSorting": [[ 0, "asc" ]],
 		"sDom": "<'box-content'<'col-sm-6'f><'col-sm-6 text-right'l><'clearfix'>>rt<'box-content'<'col-sm-6'i><'col-sm-6 text-right'p><'clearfix'>>",
@@ -222,6 +223,7 @@ function TestTable1(){
 			"sLengthMenu": '_MENU_'
 		}
 	});
+		
 }
 
 
@@ -239,7 +241,25 @@ function getMovies(movieName){
             contentType: 'application/json',
             dataType: 'jsonp',
             success: function(json) {
-                console.dir(json);
+                //console.dir(json);
+		
+		var html = '';
+		
+		$(json.results).each(function(i,val)
+		{
+
+			html += '<tr>'+						
+					'<th>'+val.title+'</th>'+							
+					'<th>'+val.release_date+'</th>'+
+					'<th>'+val.title+'</th>'+
+					'<th>'+val.title+'</th>'+
+				'</tr>';
+
+		});
+
+		$("#datatable-1 tbody").append(html);
+
+		TestTable1();
             },
             error: function(e) {
                 console.log(e.message);
@@ -279,9 +299,6 @@ function getActor(actorName){
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 $(document).ready(function () {
-
-	getMovies('avengers');
-	getActor('dicaprio');
 
 	$('.show-sidebar').on('click', function () {
 		$('div#main').toggleClass('sidebar-show');
