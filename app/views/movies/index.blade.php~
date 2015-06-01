@@ -2,7 +2,7 @@
 	
 	// Se ejecutan los plug-in de la tabla de datos y los combos
 	$(document).ready(function() {	
-		getMovies('avengers');
+		TestTable1();
 	});
 
 </script>
