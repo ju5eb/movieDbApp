@@ -1922,7 +1922,7 @@ $(document).ready(function () {
 	});
 
 	$.ajax({ 
-		header: {
+		data: {
 			"api_key":"352dc2e4ed8183bd9fbd6f7c5e235f48",
 			"movie":"avengers"
 		    },
