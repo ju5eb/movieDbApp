@@ -18,7 +18,9 @@ Route::get('/', function()
 });
 
 // -------------------- Movies ---------------------
-Route::get('movies', 'MoviesController@action_index');
+Route::get('movie', 'MovieController@action_index');
+Route::get('movie{id}', 'MovieController@view_detail');
 
 // -------------------- Actors ---------------------
-Route::get('actors', 'ActorsController@action_index');
+Route::get('person', 'PersonController@action_index');
+Route::get('person{id}', 'PersonController@view_detail');

@@ -10,22 +10,41 @@
 function LoadAjaxContent(url, contentDiv, loadingDiv){
 	contentDiv = typeof(contentDiv) != 'undefined' ? contentDiv : '#ajax-content';
 	loadingDiv = typeof(loadingDiv) != 'undefined' ? loadingDiv : '.preloader';	
-	$(loadingDiv).show();		
+	
+	$(loadingDiv).show();
 	
 	$.ajax({
 		mimeType: 'text/html; charset=utf-8', // ! Need set mimeType only when run from local file
 		url: url,
 		type: 'GET',
 		success: function(data) {
-			$(contentDiv).html(data);
-			$(loadingDiv).hide();
+			// Set the view data
+			$(contentDiv).html(data);			
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			alert(errorThrown);
 		},
 		dataType: "html",
 		async: false
+	});	
+
+	// Create Data Table component
+	CreateDataTable();
+
+	// Click function for search actors
+	$('#searchActorsButton').on('click',function(e){	
+		// Load data from API
+		LoadData('person');
 	});
+
+	// Click function for search movies
+	$('#searchMoviesButton').on('click',function(e){
+		// Load data from API
+		LoadData('movie');
+	});
+
+	// Hide the loading div
+	$(loadingDiv).hide();
 }
 
 //
@@ -196,95 +215,291 @@ function FillDataTable(data){
     $('.loadingDiv').hide(); 
 }
 
+// Function for fill table, located in element with id = datatable-1
+function FillDataTable(data){
+	// Get the dataTable object
+	var dt = $('#datatable-1').dataTable();
+	// Clear the table
+	dt.fnClearTable();
+	// Add the data
+    dt.fnAddData(data);
+    // Draw the table
+    dt.fnDraw();   	
+    // Hide the loading Div
+    $('.loadingDiv').hide(); 
+}
+
 //Make the call to the API
-function getAPIData(mode, index){
-	// Show loading div
-	$('.loadingDiv').show();
+function LoadApiData(context, index){
 
 	// Define the constants for get the API
 	var MAIN_URL = 'http://api.themoviedb.org/3/';
 	var API_KEY = '352dc2e4ed8183bd9fbd6f7c5e235f48';
+	var urlFunction = '';
+	
+	switch(context) {
+	    case 'movie_top':
+	        // Define the urlFunction by default
+			urlFunction = 'movie/popular?api_key=';
 
-	// Define the urlFunction by default
-	var urlFunction = mode + '/popular?api_key=';
+			// Validates the index to search
+			if (!!index)
+			{
+				// Define the url function
+				urlFunction = 'search/movie?query=' + index + '&api_key=';
+			}
+	        break;
+	    case 'person_top':
+	        // Define the urlFunction by default
+			urlFunction = 'person/popular?api_key=';
 
-	// Validates the index to search
-	if (!!index)
-	{
-		// Define the url function
-		urlFunction = 'search/' + mode + '?query=' + index + '&api_key=';
+			// Validates the index to search
+			if (!!index)
+			{
+				// Define the url function
+				urlFunction = 'search/person?query=' + index + '&api_key=';
+			}
+	        break;
+	    case 'movie_detail':
+
+			// Validates the index to search
+			if (!!index)
+			{
+				// Define the url function
+				urlFunction = 'movie/' + index + '?append_to_response=credits&api_key=';
+			}
+	        break;
+	    case 'person_detail':
+
+			// Validates the index to search
+			if (!!index)
+			{
+				// Define the url function
+				urlFunction = 'person/' + index + '?append_to_response=movie_credits&api_key=';
+			}
+	        break;
 	}
 
 	// Define the URL for the moviedb API
 	var fullUrl = MAIN_URL + urlFunction + API_KEY;
 
 	console.log(fullUrl);
-    
-    // Define the response array
-    var result = [];    
 
-    // Make the ajax call
-    $.ajax({
-        type: 'GET',
-        url: fullUrl,
-        async: false,
-        contentType: 'application/json',
-        dataType: 'jsonp',
-        success: function(json) {
+	if (!!urlFunction){
+	    // Define the response
+	    var results;    
 
-        	console.dir(json);
+	    // Make the ajax call
+	    $.ajax({
+	        type: 'GET',
+	        url: fullUrl,
+	        async: false,
+	        contentType: 'application/json',
+	        dataType: 'jsonp',
+	        success: function(json) {
 
-			// Iterate the results 
-			$(json.results).each(function(i,val)
+	        	console.dir(json);
+
+	        	JSON.stringify(json);	    	
+	        	
+				LoadDataOnFields(json, context);
+	        },
+	        error: function(e) {
+	            console.log(e.message);            
+	        }
+	    });	
+	}    
+}
+
+// Load the data from the API in the fields
+function LoadDataOnFields(data, context){
+
+	var result = [];
+	
+	switch(context) {
+	    case 'movie_top':
+	        // Iterate the results 
+			$(data.results).each(function(i,val)
 			{
-				if (mode == 'movie')
-				{
-					var imgURL;
-					var imgLink = '<i>No file</i>';
-					
-					// Validate the not null img
-					if (!!val.poster_path){
-						// Create the image url
-					 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.poster_path+'"';
-					 	imgLink = '<a onclick=\'window.open('+imgURL+',"_blank")\'><img src='+imgURL+'></a>';
-					}
-					
-					// Add each row to the response for movie
-					result.push([
-						imgLink,
-						val.title, 
-						val.release_date, 
-						val.vote_average, 
-						val.vote_count]
-					);						
+		        var imgURL;
+				var imgLink = '<a class="ajax-call" href="movie'+val.id+'"><i>No file</i></a>';
+				
+				// Validate the not null img
+				if (!!val.poster_path){
+					// Create the image url
+				 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.poster_path+'"';
+				 	imgLink = '<a class="ajax-call" href="movie'+val.id+'"><img src='+imgURL+'></a>';
 				}
-				else if (mode == 'person')
-				{
-					var imgURL;
-					var imgLink = '<i>No file</i>';
-					
-					// Validate the not null img
-					if (!!val.profile_path){
-						// Create the image url
-					 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.profile_path+'"';
-					 	imgLink = '<a onclick=\'window.open('+imgURL+',"_blank")\'><img src='+imgURL+'></a>';
-					}
-					
-					// Add each row to the response for actor
-					result.push([imgLink, val.id, val.name, val.popularity]);
+				
+				// Add each row to the response for movie
+				result.push([
+					imgLink,
+					val.title, 
+					val.release_date, 
+					val.vote_average, 
+					val.vote_count]
+				);
+			});	
+
+			if(!!result)
+			{		
+				// Fill the data table
+				FillDataTable(result);
+			}
+	        break;
+	    case 'person_top':
+	    	// Iterate the results 
+			$(data.results).each(function(i,val)
+			{
+		        var imgURL;
+				var imgLink = '<a class="ajax-call" href="person'+val.id+'"><i>No file</i></a>';
+				
+				// Validate the not null img
+				if (!!val.profile_path){
+					// Create the image url
+				 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.profile_path+'"';
+				 	imgLink = '<a class="ajax-call" href="person'+val.id+'"><img src='+imgURL+'></a>';
 				}
+				
+				// Add each row to the response for actor
+				result.push([imgLink, val.id, val.name, val.popularity]);
 			});
 
-			// Fill the data table
-			FillDataTable(result);			
-        },
-        error: function(e) {
-            console.log(e.message);
+			if(!!result)
+			{		
+				// Fill the data table
+				FillDataTable(result);
+			}	
+	        break;
+	    case 'movie_detail':
 
-            $('.loadingDiv').hide(); 
-        }
-    });    
+	    	var imgURL = '<img class="col-sm-12" src="http://vicsport.com.au/wp-content/themes/vicsport/img/no_image.jpg">';
+
+	        if(!!data.poster_path)
+	        {
+	    		imgURL = '<img class="col-sm-12" src="http://image.tmdb.org/t/p/w500'+data.poster_path+'">';
+	        }	    	
+
+	    	// Fill the basic fields
+	    	$('#poster_div').html(imgURL);
+	    	$('#movie_title').html('<h3><span>'+data.title+'</span></h3>');
+	    	$('#movie_name').val(data.title);
+	    	$('#movie_date').val(data.release_date);
+	    	$('#movie_vote_average').val(data.vote_average);
+	    	$('#movie_vote_count').val(data.vote_count);	    	
+	    	$('#movie_overview').val(data.overview);
+
+	        // Iterate the results 
+			$(data.credits.cast).each(function(i,val)
+			{
+		        var imgURL;
+				var imgLink = '<a class="ajax-call" registerId="'+val.id+'" context="person_detail" href="person'+val.id+'"><i>No file</i></a>';
+				
+				// Validate the not null img
+				if (!!val.profile_path){
+					// Create the image url
+				 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.profile_path+'"';
+				 	imgLink = '<a class="ajax-call" registerId="'+val.id+'" context="person_detail" href="person'+val.id+'"><img src='+imgURL+'></a>';
+				}
+				
+				// Add each row to the response for actor
+				result.push([imgLink, val.id, val.name, val.character]);
+			});
+
+			if(!!result)
+			{		
+				// Fill the data table
+				FillDataTable(result);
+			}
+	        break;
+	    case 'person_detail':
+	        
+	    	var imgURL = '<img class="col-sm-12" src="http://vicsport.com.au/wp-content/themes/vicsport/img/no_image.jpg">';
+
+	        if(!!data.profile_path)
+	        {
+	        	imgURL = '<img class="col-sm-12" src="http://image.tmdb.org/t/p/w500'+data.profile_path+'">';	
+	        }	    	
+
+	    	// Fill the basic fields
+	    	$('#profile_pic_div').html(imgURL);
+	    	$('#person_title').html('<h3><span>'+data.name+'</span></h3>');
+	    	$('#person_name').val(data.name);
+	    	$('#person_birthdate').val(data.birthday);
+	    	$('#person_place_of_birth').val(data.place_of_birth);
+	    	$('#person_popularity').val(data.popularity);	    	
+	    	$('#person_biography').val(data.biography);
+
+	        // Iterate the results 
+			$(data.movie_credits.cast).each(function(i,val)
+			{
+		        var imgURL;
+				var imgLink = '<a class="ajax-call" registerId="'+val.id+'" context="movie_detail" href="movie'+val.id+'"><i>No file</i></a>';
+				
+				// Validate the not null img
+				if (!!val.poster_path){
+					// Create the image url
+				 	imgURL = '"http://image.tmdb.org/t/p/w500'+val.poster_path+'"';
+				 	imgLink = '<a class="ajax-call" registerId="'+val.id+'" context="movie_detail" href="movie'+val.id+'"><img src='+imgURL+'></a>';
+				}
+				
+				// Add each row to the response for movie
+				result.push([
+					imgLink,
+					val.title, 
+					val.release_date, 
+					val.character]
+				);
+			});
+
+			if(!!result)
+			{		
+				// Fill the data table
+				FillDataTable(result);
+			}
+	        break;
+	}
+
+	$('.ajax-call').on('click', function (e) {    	
+		e.preventDefault();
+		var url = $(this).attr('href');
+		var context = $(this).attr('context');
+		var registerId = $(this).attr('registerId');
+		
+		window.location.hash = url;
+		LoadAjaxContent(url);
+		LoadData(url);
+	});
 }
+
+// Get the context and index by the URL and load data
+function LoadData(url){
+	var context, registerId;
+	// Decide the way from the url info
+	if(url == 'movie')
+	{
+		context = 'movie_top';
+		registerId = $('#movie_name').val();
+	}
+	else if(url.includes('movie'))
+	{
+		context =  'movie_detail';
+		registerId = url.replace(/\D/g,'');
+	}
+	else if(url == 'person')
+	{
+		context = 'person_top';
+		registerId = $('#actor_name').val();
+	}
+	else if(url.includes('person'))
+	{
+		context = 'person_detail';
+		registerId = url.replace(/\D/g,'');
+	}
+	// Get the info from API
+	LoadApiData(context, registerId);		
+}
+
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
@@ -304,9 +519,10 @@ $(document).ready(function () {
 	
 	var ajax_url = location.hash.replace(/^#/, '');
 	if (ajax_url.length < 1) {
-		ajax_url = 'movies';
+		ajax_url = 'movie';
 	}
 	LoadAjaxContent(ajax_url);
+	LoadData(ajax_url);
 
 	$('.main-menu').on('click', 'a', function (e) {
 		var parents = $(this).parents('li');
@@ -345,13 +561,15 @@ $(document).ready(function () {
 				$('#content').removeClass('full-content');
 			}
 			var url = $(this).attr('href');
+			var context = $(this).attr('context');
 			window.location.hash = url;
 			LoadAjaxContent(url);
+			LoadData(url);
 		}
 		if ($(this).attr('href') == '#') {
 			e.preventDefault();
 		}
-	});
+	});	
 
 	var height = window.innerHeight - 49;
 
@@ -408,9 +626,12 @@ $(document).ready(function () {
 			else {
 				$('#content').removeClass('full-content');
 			}
-			var url = $(this).attr('href');
+			var url = $(this).attr('href');			
+			var context = $(this).attr('context');
 			window.location.hash = url;
 			LoadAjaxContent(url);
+			LoadData(url);
 		}
 	});
 });
+	
